@@ -10,12 +10,16 @@ namespace PasswordGenerator.src
 {
     internal class check
     {
-        public bool checkPW()
+        public bool checkPW(string input)
         {
-            return true; 
+            if (PasswordChecker.PasswordChecker.getInput(input))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-
-
-        
     }
 }
