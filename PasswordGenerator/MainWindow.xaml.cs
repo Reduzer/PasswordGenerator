@@ -1,5 +1,6 @@
 ﻿using PasswordGenerator.Generator;
 using PasswordGenerator.src;
+using Program;
 using System.Diagnostics;
 using System.Printing;
 using System.Text;
@@ -21,11 +22,13 @@ namespace PasswordGenerator
     public partial class MainWindow : Window
     {
         private generateString m_generateString;
+        private generateWithHash m_generateWithHash;
         private check m_check;
 
         public MainWindow()
         {
             m_generateString = new generateString();
+            m_generateWithHash = new generateWithHash();
             m_check = new check();
 
             InitializeComponent();
@@ -33,13 +36,15 @@ namespace PasswordGenerator
 
         private void generateString()
         {
-            string generatedString = "";
+            string generatedString = String.Empty;
+            string generatedWithHash = String.Empty;
 
             var input = InputBox.Text.ToString();
 
             int length = Int32.Parse(input);
 
             generatedString = m_generateString.generateRandomString(length);
+            generatedWithHash = m_generateWithHash.generate(length);
 
             if (m_check.checkPW(generatedString))
             {
@@ -47,12 +52,20 @@ namespace PasswordGenerator
             }
             else
             {
-                generateString();
+                if (m_check.checkPW(generatedWithHash))
+                {
+                    GeneratedLabel.Text = generatedWithHash;
+                }
+                else
+                {
+                    generateString();
+                }
             }
         }
 
         private void BtnGenerate_Click(object sender, RoutedEventArgs e)
         {
+            GeneratedLabel.Text = String.Empty;
             generateString();
         }
     }
