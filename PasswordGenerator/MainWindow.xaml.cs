@@ -1,72 +1,48 @@
-﻿using PasswordGenerator.Generator;
-using PasswordGenerator.src;
-using Program;
-using System.Diagnostics;
-using System.Printing;
-using System.Text;
+﻿using Shared;
+using Shared.Factory;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PasswordGenerator
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        private generateString m_generateString;
-        private generateWithHash m_generateWithHash;
-        private check m_check;
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
+	{
+		private const string c_sMessageNoNumber = "Bitte gebe eine Zahl an!";
+		private const string c_sInfoCaption = "Information";
 
-        public MainWindow()
-        {
-            m_generateString = new generateString();
-            m_generateWithHash = new generateWithHash();
-            m_check = new check();
+		private Password m_oGeneratedPassword;
+		private int m_nLength;
 
-            InitializeComponent();
-        }
+		public MainWindow()
+		{
+			InitializeComponent();
+			Init();
+		}
 
-        private void generateString()
-        {
-            string generatedString = String.Empty;
-            string generatedWithHash = String.Empty;
+		private void Init()
+		{
+			GeneratedLabel.IsReadOnly = true;
+		}
 
-            var input = InputBox.Text.ToString();
+		private void BtnGenerate_Click(object sender, RoutedEventArgs e)
+		{
+			int nLength;
 
-            int length = Int32.Parse(input);
+			if (!int.TryParse(InputBox.Text, out nLength)) {
+				MessageBox.Show(c_sMessageNoNumber, c_sInfoCaption, MessageBoxButton.OK);
+			}
+			else {
+				GeneratePassword(nLength);
 
-            generatedString = m_generateString.generateRandomString(length);
-            generatedWithHash = m_generateWithHash.generate(length);
+				GeneratedLabel.Text = m_oGeneratedPassword.sData;
+			}
+		}
 
-            if (m_check.checkPW(generatedString))
-            {
-                GeneratedLabel.Text = generatedString;
-            }
-            else
-            {
-                if (m_check.checkPW(generatedWithHash))
-                {
-                    GeneratedLabel.Text = generatedWithHash;
-                }
-                else
-                {
-                    generateString();
-                }
-            }
-        }
-
-        private void BtnGenerate_Click(object sender, RoutedEventArgs e)
-        {
-            GeneratedLabel.Text = String.Empty;
-            generateString();
-        }
-    }
+		private void GeneratePassword(int nLength)
+		{
+			m_oGeneratedPassword = PasswordFactory.Instance.GeneratePassword(nLength);
+		}
+	}
 }

@@ -1,38 +1,21 @@
-﻿using System;
-
-using PasswordChecker.Hashing;
-using PasswordChecker.CheckDB;
-
-namespace PasswordChecker
+﻿namespace PasswordChecker
 {
-    public static class PasswordChecker
-    {
-        private static handler m_hashHandler = new handler();
-        private static string hashes;
-        private static httpclient m_httpClient = new httpclient();
+	public static class PasswordChecker
+	{
+		private const bool bGenerateNumbers = true;
+		private const bool bGenerateSymbols = true;
 
-        public static string response;
-        private static string sUserInput;
+		public static void Main()
+		{
+			int nFlag = 1;
+			if (bGenerateNumbers) {
+				nFlag = nFlag << 1;
+			}
+			if (bGenerateSymbols) {
+				nFlag = nFlag << 2;
+			}
 
-        public static void Main()
-        {
-
-        }
-
-        public static bool getInput(string input)
-        {
-            sUserInput = input;
-
-            hashes = m_hashHandler.setUserInput(sUserInput);
-
-            httpclient.request(hashes);
-
-            if (response == null)
-            {
-                return true;
-            }
-
-            return false;
-        }
-    }
+			Console.WriteLine(nFlag);
+		}
+	}
 }
